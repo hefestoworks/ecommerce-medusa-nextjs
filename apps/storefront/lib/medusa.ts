@@ -3,6 +3,7 @@ import Medusa from "@medusajs/js-sdk"
 // Inicializar el cliente de Medusa
 const medusa = new Medusa({
   baseUrl: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000",
+  publishableKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_API_KEY!,
   debug: process.env.NODE_ENV === "development",
 })
 

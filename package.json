@@ -1,15 +1,17 @@
 {
-    "name": "mi-ecommerce",
-    "private": true,
-    "scripts": {
-      "build": "pnpm --filter \"./apps/*\" build",
-      "dev": "pnpm --filter \"./apps/*\" --parallel dev",
-      "lint": "pnpm --filter \"./apps/*\" lint",
-      "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
-    },
-    "devDependencies": {
-      "prettier": "^3.3.2",
-      "typescript": "^5.4.5"
-    },
-    "packageManager": "pnpm@9.4.0"
- }
+  "name": "mi-ecommerce",
+  "private": true,
+  "scripts": {
+    "build": "pnpm --filter \"./apps/*\" build",
+    "dev": "pnpm --filter \"./apps/*\" --parallel dev",
+    "lint": "pnpm --filter \"./apps/*\" lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "infra:up": "docker-compose -f infra/docker-compose.yml up -d",
+    "infra:down": "docker-compose -f infra/docker-compose.yml down"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.2",
+    "typescript": "^5.4.5"
+  },
+  "packageManager": "pnpm@9.4.0"
+}

@@ -4,20 +4,42 @@ import Link from "next/link"
 
 interface ProductCardProps {
   product: Product
+  userSelectedVariantId?: string
+  region?: { currency_code: string }
+  defaultPriceText?: string // mensaje por defecto si no hay precio
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
-  const priceObject = product.variants?.[0]?.calculated_price
-  const amount = priceObject?.calculated_amount
-  const currencyCode = priceObject?.currency_code
+export default function ProductCard({
+  product,
+  userSelectedVariantId,
+  region,
+  defaultPriceText = "Precio no disponible",
+}: ProductCardProps) {
+  // Seleccionar variante
+  const selectedVariant =
+    product?.variants?.find(v => v.id === userSelectedVariantId) ??
+    product?.variants?.sort(
+      (a, b) =>
+        (a.calculated_price?.calculated_amount ?? Infinity) -
+        (b.calculated_price?.calculated_amount ?? Infinity)
+    )[0] ??
+    { id: "no-variant", title: "Sin variantes", calculated_price: undefined } // fallback seguro
 
-  const formattedPrice =
-    typeof amount === "number" && currencyCode
+  // Extraer precio
+  const amount = selectedVariant?.calculated_price?.calculated_amount
+  const currencyCode = region?.currency_code ?? selectedVariant?.calculated_price?.currency_code
+
+  // Formateo seguro
+  function formatPrice(amount: number|null|undefined, currencyCode: string|null|undefined) {
+    return typeof amount === "number" && currencyCode
       ? new Intl.NumberFormat("es-ES", {
           style: "currency",
           currency: currencyCode,
-        }).format(amount / 100) // Dividimos por 100 para obtener el valor real
-      : "Precio no disponible"
+        }).format(amount)
+      : defaultPriceText
+  }
+
+  const formattedPrice = formatPrice(amount, currencyCode)
 
   return (
     <Link href={`/products/${product.handle}`} className="group block">
@@ -31,8 +53,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             className="object-cover object-center transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-80
-           flex items-center justify-center text-gray-500">
+          <div className="w-full h-80 flex items-center justify-center text-gray-500">
             Sin imagen
           </div>
         )}
